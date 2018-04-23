@@ -203,9 +203,9 @@ function showThumb($obj,$size=null,$link=false){
     // }else
     if(isset($matches[1][0])){
         $thumb = $matches[1][0];
-        if(!empty($options->src_add) && !empty($options->cdn_add)){
-            $thumb = str_ireplace($options->src_add,$options->cdn_add,$thumb);
-        }
+        // if(!empty($options->src_add) && !empty($options->cdn_add)){
+        //     $thumb = str_ireplace($options->src_add,$options->cdn_add,$thumb);
+        // }
     }
     if(empty($thumb) && empty($options->default_thumb)){
         $thumb= $options->themeUrl .'/images/thumb/' . rand(1, 20) . '.jpg';
