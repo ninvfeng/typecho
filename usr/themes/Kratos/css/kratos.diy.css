@@ -2,3 +2,9 @@
 .kratos-post-content ol li{
 	margin-top:20px;
 }
+
+pre{
+	color: #00ff00;
+	background-color: #000;
+	font-size: 16px;
+}
