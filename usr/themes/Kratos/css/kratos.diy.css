@@ -10,8 +10,8 @@ pre{
 }
 
 pre::selection {
-    background:#000000; 
-    color:#FFFFFF;
+    color:#000000; 
+    background:#FFFFFF;
 }
 
 code{
@@ -21,6 +21,6 @@ code{
 }
 
 code::selection {
-    background:#000000; 
-    color:#FFFFFF;
+    color:#000000; 
+    background:#FFFFFF;
 }
