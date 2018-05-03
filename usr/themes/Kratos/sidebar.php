@@ -20,7 +20,7 @@
 	<h4 class="widget-title">分类目录</h4><ul><?php $this->widget('Widget_Metas_Category_List')->to($cats);?><?php while ($cats->next()): ?>
 	<li class="cat-item"><a href="<?php $cats->permalink()?>"><?php $cats->name()?></a> (<?php $cats->count()?>)</li><?php endwhile; ?>
 	</ul></aside>
-<?php endif; ?
+<?php endif; ?>
 
 <?php //热门随机文章 ?>
 <?php if (!empty($this->options->sidebarBlock) && in_array('ShowRecent', $this->options->sidebarBlock)): ?>
