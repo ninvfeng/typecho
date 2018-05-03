@@ -40,20 +40,11 @@
 								<?php }?>
 								<nav id="kratos-menu-wrap" class="menu-container">
 									<ul id="kratos-primary-menu" class="sf-menu">
-										<li class="current-menu-item"><a href="<?php $this->options ->siteUrl(); ?>">Home</a></li>
-										<li class="current-menu-item"><a href="<?php $this->options ->siteUrl(); ?>">Categories</a>
+										<li class="current-menu-item"><a href="<?php $this->options ->siteUrl(); ?>">分类</a>
 											<ul class="sub-menu">
 												<?php $this->widget('Widget_Metas_Category_List')->to($cats); ?>
 												<?php while ($cats->next()): ?>
 												<li><a href="<?php $cats->permalink()?>"><?php $cats->name()?></a></li>
-												<?php endwhile; ?>
-											</ul>
-										</li>
-										<li class="current-menu-item"><a href="<?php $this->options ->siteUrl(); ?>">Pages</a>
-											<ul class="sub-menu">
-												<?php $this->widget('Widget_Contents_Page_List')->to($pages); ?>
-												<?php while($pages->next()): ?>
-												<li><a href="<?php $pages->permalink(); ?>"><?php $pages->title(); ?></a></li>
 												<?php endwhile; ?>
 											</ul>
 										</li>
