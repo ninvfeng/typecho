@@ -1238,7 +1238,7 @@ class HyperDown
         $str = implode("\n", $this->markLines($lines, $start + 1));
 
         return $isEmpty ? '' :
-            '<pre><code' . (!empty($lang) ? " class=\"{$lang}\"" : 'class="language-php"')
+            '<pre><code' . (!empty($lang) ? " class=\"{$lang}\"" : ' class="language-php"')
             . (!empty($rel) ? " rel=\"{$rel}\"" : '') . '>'
             . $str . '</code></pre>';
     }
