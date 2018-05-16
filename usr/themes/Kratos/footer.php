@@ -38,6 +38,8 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 <script type='text/javascript' src='//cdn.bootcss.com/superfish/1.7.4/superfish.min.js'></script>
 <script type='text/javascript' src='<?php $this->options->themeUrl('js/kratos.js?ver=2.5.2'); ?>'></script>
 <script type='text/javascript' src='<?php $this->options->themeUrl('js/kratos.diy.js?ver=2.5.2'); ?>'></script>
+<script src="https://cdn.bootcss.com/prism/1.14.0/prism.min.js"></script>
+<script src="https://cdn.bootcss.com/prism/1.14.0/components/prism-php.min.js"></script>
 <?php if (!$this->options->sidebarlr == 'single'): ?><script type="text/javascript">
 if ($("#main").height() > $("#sidebar").height()) {
 	var footerHeight = 0;

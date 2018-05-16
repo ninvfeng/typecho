@@ -70,5 +70,3 @@
 	</div>
 </div>
 <?php $this->need('footer.php'); ?>
-<script src="https://cdn.bootcss.com/prism/1.14.0/prism.min.js"></script>
-<script src="https://cdn.bootcss.com/prism/1.14.0/components/prism-php.min.js"></script>
