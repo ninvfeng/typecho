@@ -7,6 +7,10 @@
  */ 
  if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <?php $this->need('header.php'); ?>
+	<link href="https://cdn.bootcss.com/prism/1.14.0/themes/prism.min.css" rel="stylesheet">
+	<script src="https://cdn.bootcss.com/prism/1.14.0/prism.min.js"></script>
+	<script src="https://cdn.bootcss.com/prism/1.14.0/components/prism-php-extras.min.js"></script>
+	<script src="https://cdn.bootcss.com/prism/1.14.0/components/prism-php.min.js"></script>
 	<div class="container">
 		<div class="row">
 			<?php if ($this->options->sidebarlr == 'left_side'): ?>
