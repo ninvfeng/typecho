@@ -24,7 +24,7 @@ class Markdown
             $parser = new HyperDown();
 
             $parser->hook('afterParseCode', function ($html) {
-                return preg_replace("/<code class=\"([_a-z0-9-]+)\">/i", "<code class=\"lang-\\1\">", $html);
+                return preg_replace("/<code class=\"([_a-z0-9-]+)\">/i", "<code class=\"language-\\1\">", $html);
             });
 
             $parser->enableHtml(true);
@@ -41,7 +41,7 @@ class Markdown
      */
     public static function transerCodeClass($html)
     {
-        return preg_replace("/<code class=\"([_a-z0-9-]+)\">/i", "<code class=\"lang-\\1\">", $html);
+        return preg_replace("/<code class=\"([_a-z0-9-]+)\">/i", "<code class=\"language-\\1\">", $html);
     }
 
     /**
