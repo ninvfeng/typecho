@@ -19,7 +19,8 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 							</p>
 							<p>Copyright <?php echo date("Y"); ?> <a href="<?php $this->options ->siteUrl(); ?>"><?php $this->options->title();?></a>.
 							<br>Powered by <a href="http://www.typecho.org/" target="_blank">Typecho</a>
-							Theme by <a href="https://github.com/vtrois/kratos" target="_blank" rel="nofollow">Kratos</a> </p>
+							Theme by <a href="https://github.com/vtrois/kratos" target="_blank" rel="nofollow">Kratos</a>
+							<br><a href="http://www.miitbeian.gov.cn" target="_blank" rel="nofollow">粤ICP备18022419号-1</a></p>
 						</div>
 					</div>
 				</div>
