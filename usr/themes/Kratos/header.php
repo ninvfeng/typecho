@@ -14,8 +14,8 @@
 		<link rel='stylesheet' id='awesome-style-css'  href='//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css' type='text/css' media='all' />
 		<link rel='stylesheet' id='bootstrap-style-css'  href='//cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css' type='text/css' media='all' />
 		<link rel='stylesheet' id='superfish-style-css'  href='//cdn.bootcss.com/superfish/1.7.4/superfish.min.css' type='text/css' media='all' />
-		<link rel='stylesheet' id='kratos-style-css'  href='<?php $this->options->themeUrl('style.css?ver=2.5.2'); ?>' type='text/css' media='all' />
-		<link rel='stylesheet' id='kratos-diy-style-css'  href='<?php $this->options->themeUrl('css/kratos.diy.css?ver=2.5.2'); ?>' type='text/css' media='all' />
+		<link rel='stylesheet' id='kratos-style-css'  href='<?php $this->options->themeUrl('style.css?ver=2.5.3'); ?>' type='text/css' media='all' />
+		<link rel='stylesheet' id='kratos-diy-style-css'  href='<?php $this->options->themeUrl('css/kratos.diy.css?ver=2.5.3'); ?>' type='text/css' media='all' />
 		<?php $this->header('keywords=&generator=&template=&pingback=&xmlrpc=&wlw=&commentReply=&rss1=&rss2=&atom='); ?>
 		<?php if($this->options->site_bw == 'able'): ?>
 			<style type="text/css">html{filter: grayscale(100%);-webkit-filter: grayscale(100%);-moz-filter: grayscale(100%);-ms-filter: grayscale(100%);-o-filter: grayscale(100%);filter: progid:DXImageTransform.Microsoft.BasicImage(grayscale=1);filter: gray;-webkit-filter: grayscale(1); }
