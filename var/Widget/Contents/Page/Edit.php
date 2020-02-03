@@ -108,6 +108,9 @@ class Widget_Contents_Page_Edit extends Widget_Contents_Post_Edit implements Wid
             // 完成发布插件接口
             $this->pluginHandle()->finishSave($contents, $this);
 
+            /** 设置高亮 */
+            $this->widget('Widget_Notice')->highlight($this->cid);
+
             if ($this->request->isAjax()) {
                 $created = new Typecho_Date($this->options->time);
                 $this->response->throwJson(array(
@@ -124,6 +127,62 @@ class Widget_Contents_Page_Edit extends Widget_Contents_Post_Edit implements Wid
                 $this->response->redirect(Typecho_Common::url('write-page.php?cid=' . $this->cid, $this->options->adminUrl));
             }
         }
+    }
+
+    /**
+     * 标记页面
+     *
+     * @access public
+     * @return void
+     */
+    public function markPage()
+    {
+        $status = $this->request->get('status');
+        $statusList = array(
+            'publish'   =>  _t('公开'),
+            'hidden'    =>  _t('隐藏')
+        );
+
+        if (!isset($statusList[$status])) {
+            $this->response->goBack();
+        }
+
+        $pages = $this->request->filter('int')->getArray('cid');
+        $markCount = 0; 
+
+        foreach ($pages as $page) {
+            // 标记插件接口
+            $this->pluginHandle()->mark($status, $page, $this);
+            $condition = $this->db->sql()->where('cid = ?', $page);
+
+            if ($this->db->query($condition->update('table.contents')->rows(array('status' => $status)))) {
+                // 处理草稿
+                $draft = $this->db->fetchRow($this->db->select('cid')
+                    ->from('table.contents')
+                    ->where('table.contents.parent = ? AND table.contents.type = ?',
+                        $page, 'page_draft')
+                ->limit(1));
+
+                if (!empty($draft)) {
+                    $this->db->query($this->db->update('table.contents')->rows(array('status' => $status))
+                        ->where('cid = ?', $draft['cid']));
+                }
+
+                // 完成标记插件接口
+                $this->pluginHandle()->finishMark($status, $page, $this);
+
+                $markCount ++;
+            }
+
+            unset($condition);
+        }
+
+        /** 设置提示信息 */
+        $this->widget('Widget_Notice')->set($markCount > 0 ? _t('页面已经被标记为<strong>%s</strong>', $statusList[$status]) : _t('没有页面被标记'),
+        $deleteCount > 0 ? 'success' : 'notice');
+
+        /** 返回原网页 */
+        $this->response->goBack();
     }
 
     /**
@@ -256,6 +315,7 @@ class Widget_Contents_Page_Edit extends Widget_Contents_Post_Edit implements Wid
         $this->security->protect();
         $this->on($this->request->is('do=publish') || $this->request->is('do=save'))->writePage();
         $this->on($this->request->is('do=delete'))->deletePage();
+        $this->on($this->request->is('do=mark'))->markPage();
         $this->on($this->request->is('do=deleteDraft'))->deletePageDraft();
         $this->on($this->request->is('do=sort'))->sortPage();
         $this->response->redirect($this->options->adminUrl);

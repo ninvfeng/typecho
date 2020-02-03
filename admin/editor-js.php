@@ -2,6 +2,7 @@
 <?php $content = !empty($post) ? $post : $page; if ($options->markdown): ?>
 <script src="<?php $options->adminStaticUrl('js', 'hyperdown.js?v=' . $suffixVersion); ?>"></script>
 <script src="<?php $options->adminStaticUrl('js', 'pagedown.js?v=' . $suffixVersion); ?>"></script>
+<script src="<?php $options->adminStaticUrl('js', 'paste.js?v=' . $suffixVersion); ?>"></script>
 <script>
 $(document).ready(function () {
     var textarea = $('#text'),
@@ -97,7 +98,7 @@ $(document).ready(function () {
         if (count == 0) {
             reloadScroll(true);
         } else {
-            images.load(function () {
+            images.bind('load error', function () {
                 count --;
 
                 if (count == 0) {
@@ -202,6 +203,17 @@ $(document).ready(function () {
             $("#wmd-preview").outerHeight($("#wmd-editarea").innerHeight());
 
             return false;
+        });
+
+        // 剪贴板复制图片
+        textarea.pastableTextarea().on('pasteImage', function (e, data) {
+            var name = data.name ? data.name.replace(/[\(\)\[\]\*#!]/g, '') : (new Date()).toISOString().replace(/\..+$/, '');
+            if (!name.match(/\.[a-z0-9]{2,}$/i)) {
+                var ext = data.blob.type.split('/').pop();
+                name += '.' + ext;
+            }
+
+            Typecho.uploadFile(new File([data.blob], name), name);
         });
     }
 

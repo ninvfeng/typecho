@@ -219,7 +219,7 @@ class Typecho_Request
     {
         if (empty(self::$_urlPrefix)) {
             if (defined('__TYPECHO_URL_PREFIX__')) {
-                self::$_urlPrefix == __TYPECHO_URL_PREFIX__;
+                self::$_urlPrefix = __TYPECHO_URL_PREFIX__;
             } else if (!defined('__TYPECHO_CLI__')) {
                 self::$_urlPrefix = (self::isSecure() ? 'https' : 'http') . '://' 
                     . (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME']);
@@ -237,7 +237,9 @@ class Typecho_Request
      */
     public static function isSecure()
     {
-        return (!empty($_SERVER['HTTPS']) && 'off' != strtolower($_SERVER['HTTPS'])) 
+        return (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && !strcasecmp('https', $_SERVER['HTTP_X_FORWARDED_PROTO']))
+            || (!empty($_SERVER['HTTP_X_FORWARDED_PORT']) && 443 == $_SERVER['HTTP_X_FORWARDED_PORT'])
+            || (!empty($_SERVER['HTTPS']) && 'off' != strtolower($_SERVER['HTTPS']))
             || (!empty($_SERVER['SERVER_PORT']) && 443 == $_SERVER['SERVER_PORT'])
             || (defined('__TYPECHO_SECURE__') && __TYPECHO_SECURE__);
     }

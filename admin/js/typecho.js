@@ -1,6 +1,7 @@
 (function (w) {
     w.Typecho = {
         insertFileToEditor  :   function (file, url, isImage) {},
+        uploadFile: function (file) {},
         editorResize        :   function (id, url) {
             $('#' + id).resizeable({
                 minHeight   :   100,
@@ -25,7 +26,7 @@ function scrollableEditor(el, preview) {
         test = $('<div></div>').appendTo(document.body),
         focused = false;
 
-    for (k in styles) {
+    for (var k in styles) {
         if (k.match(/^(direction|font-family|font-size|font-style|font-weight|letter-spacing|line-height|text-align|vertical-align|white-space|word-wrap|word-break|word-spacing)$/i)) {
             css[k] = styles[k];
         }
