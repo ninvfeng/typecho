@@ -232,7 +232,8 @@ class Widget_Abstract_Contents extends Widget_Abstract
     {
         $select = $this->db->select(array('COUNT(table.contents.cid)' => 'num'))->from('table.contents')
         ->where("table.contents.{$column} > {$offset}")
-        ->where("table.contents.type = ?", $type);
+        ->where("table.contents.type = ? OR (table.contents.type = ? AND table.contents.parent = ?)",
+            $type, $type . '_draft', 0);
 
         if (!empty($status)) {
             $select->where("table.contents.status = ?", $status);
@@ -271,16 +272,16 @@ class Widget_Abstract_Contents extends Widget_Abstract
     {
         /** 构建插入结构 */
         $insertStruct = array(
-            'title'         =>  empty($content['title']) ? NULL : htmlspecialchars($content['title']),
-            'created'       =>  empty($content['created']) ? $this->options->time : $content['created'],
+            'title'         =>  !isset($content['title']) || strlen($content['title']) === 0 ? NULL : htmlspecialchars($content['title']),
+            'created'       =>  !isset($content['created']) ? $this->options->time : $content['created'],
             'modified'      =>  $this->options->time,
-            'text'          =>  empty($content['text']) ? NULL : $content['text'],
+            'text'          =>  !isset($content['text']) || strlen($content['text']) === 0 ? NULL : $content['text'],
             'order'         =>  empty($content['order']) ? 0 : intval($content['order']),
             'authorId'      =>  isset($content['authorId']) ? $content['authorId'] : $this->user->uid,
             'template'      =>  empty($content['template']) ? NULL : $content['template'],
             'type'          =>  empty($content['type']) ? 'post' : $content['type'],
             'status'        =>  empty($content['status']) ? 'publish' : $content['status'],
-            'password'      =>  empty($content['password']) ? NULL : $content['password'],
+            'password'      =>  !isset($content['password']) || strlen($content['password']) === 0 ? NULL : $content['password'],
             'commentsNum'   =>  empty($content['commentsNum']) ? 0 : $content['commentsNum'],
             'allowComment'  =>  !empty($content['allowComment']) && 1 == $content['allowComment'] ? 1 : 0,
             'allowPing'     =>  !empty($content['allowPing']) && 1 == $content['allowPing'] ? 1 : 0,
@@ -297,7 +298,7 @@ class Widget_Abstract_Contents extends Widget_Abstract
 
         /** 更新缩略名 */
         if ($insertId > 0) {
-            $this->applySlug(empty($content['slug']) ? NULL : $content['slug'], $insertId);
+            $this->applySlug(!isset($content['slug']) || strlen($content['slug']) === 0 ? NULL : $content['slug'], $insertId);
         }
 
         return $insertId;
@@ -320,9 +321,9 @@ class Widget_Abstract_Contents extends Widget_Abstract
 
         /** 构建更新结构 */
         $preUpdateStruct = array(
-            'title'         =>  empty($content['title']) ? NULL : htmlspecialchars($content['title']),
+            'title'         =>  !isset($content['title']) || strlen($content['title']) === 0 ? NULL : htmlspecialchars($content['title']),
             'order'         =>  empty($content['order']) ? 0 : intval($content['order']),
-            'text'          =>  empty($content['text']) ? NULL : $content['text'],
+            'text'          =>  !isset($content['text']) || strlen($content['text']) === 0 ? NULL : $content['text'],
             'template'      =>  empty($content['template']) ? NULL : $content['template'],
             'type'          =>  empty($content['type']) ? 'post' : $content['type'],
             'status'        =>  empty($content['status']) ? 'publish' : $content['status'],
@@ -341,7 +342,7 @@ class Widget_Abstract_Contents extends Widget_Abstract
         }
 
         /** 更新创建时间 */
-        if (!empty($content['created'])) {
+        if (isset($content['created'])) {
             $updateStruct['created'] = $content['created'];
         }
 
@@ -353,7 +354,7 @@ class Widget_Abstract_Contents extends Widget_Abstract
 
         /** 更新缩略名 */
         if ($updateRows > 0 && isset($content['slug'])) {
-            $this->applySlug(empty($content['slug']) ? NULL : $content['slug'], $updateCondition);
+            $this->applySlug(!isset($content['slug']) || strlen($content['slug']) === 0 ? NULL : $content['slug'], $updateCondition);
         }
 
         return $updateRows;
@@ -637,13 +638,23 @@ class Widget_Abstract_Contents extends Widget_Abstract
             ->select()->from('table.metas')
             ->join('table.relationships', 'table.relationships.mid = table.metas.mid')
             ->where('table.relationships.cid = ?', $value['cid'])
-            ->where('table.metas.type = ?', 'category')
-            ->order('table.metas.order', Typecho_Db::SORT_ASC), array($this->widget('Widget_Metas_Category_List'), 'filter'));
+            ->where('table.metas.type = ?', 'category'), array($this->widget('Widget_Metas_Category_List'), 'filter'));
+
         $value['category'] = NULL;
         $value['directory'] = array();
 
         /** 取出第一个分类作为slug条件 */
         if (!empty($value['categories'])) {
+            /** 使用自定义排序 */
+            usort($value['categories'], function ($a, $b) {
+                $field = 'order';
+                if ($a['order'] == $b['order']) {
+                    $field = 'mid';
+                }
+
+                return $a[$field] < $b[$field] ? -1 : 1;
+            });
+
             $value['category'] = $value['categories'][0]['slug'];
 
             $value['directory'] = $this->widget('Widget_Metas_Category_List')->getAllParentsSlug($value['categories'][0]['mid']);
@@ -718,8 +729,8 @@ class Widget_Abstract_Contents extends Widget_Abstract
         $value['directory'] = $tmpDirectory;
         
         /** 处理密码保护流程 */
-        if (!empty($value['password']) &&
-        $value['password'] !== Typecho_Cookie::get('protectPassword') &&
+        if (strlen($value['password']) > 0 &&
+        $value['password'] !== Typecho_Cookie::get('protectPassword_' . $value['cid']) &&
         $value['authorId'] != $this->user->uid && 
         !$this->user->pass('editor', true)) {
             $value['hidden'] = true;
@@ -738,6 +749,7 @@ class Widget_Abstract_Contents extends Widget_Abstract
                 . '" method="post">' .
             '<p class="word">' . _t('请输入密码访问') . '</p>' .
             '<p><input type="password" class="text" name="protectPassword" />
+            <input type="hidden" name="protectCID" value="' . $value['cid'] . '" />
             <input type="submit" class="submit" value="' . _t('提交') . '" /></p>' .
             '</form>';
 
